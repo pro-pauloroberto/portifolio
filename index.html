@@ -1,0 +1,133 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfólio de QA - [Seu Nome]</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <!-- Cabeçalho -->
+  <header class="bg-blue-600 text-white py-6">
+    <div class="container mx-auto text-center">
+      <h1 class="text-4xl font-bold">[Seu Nome]</h1>
+      <p class="text-xl mt-2">Analista de QA | Automação de Testes | Transição para Dados</p>
+      <div class="mt-4 flex justify-center space-x-4">
+        <a href="https://github.com/[seu-usuario]" target="_blank" class="hover:underline">GitHub</a>
+        <a href="https://linkedin.com/in/[seu-linkedin]" target="_blank" class="hover:underline">LinkedIn</a>
+        <a href="mailto:[seu-email]" class="hover:underline">Email</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sobre -->
+  <section id="sobre" class="py-10">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-6">Sobre Mim</h2>
+      <p class="text-lg text-gray-700 max-w-3xl mx-auto">
+        Sou um analista de QA com 8 anos de experiência em testes funcionais e automatizados, com foco em garantir a qualidade de software em projetos ágeis. Tenho expertise em ferramentas como Selenium, Cypress, Python e SQL, além de configurar pipelines de CI/CD com GitHub Actions. Atualmente, estou em transição para a área de dados, desenvolvendo habilidades em análise de dados com Python, SQL e ferramentas de visualização como Looker Studio e PowerBI.
+      </p>
+    </div>
+  </section>
+
+  <!-- Habilidades -->
+  <section id="habilidades" class="bg-white py-10">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-6">Habilidades</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-gray-100 p-6 rounded-lg shadow-md text-center">
+          <h3 class="text-xl font-semibold mb-2">Testes Automatizados</h3>
+          <p>Selenium, Cypress, Postman, pytest</p>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-lg shadow-md text-center">
+          <h3 class="text-xl font-semibold mb-2">CI/CD</h3>
+          <p>GitHub Actions, Jenkins</p>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-lg shadow-md text-center">
+          <h3 class="text-xl font-semibold mb-2">Análise de Dados</h3>
+          <p>Python, SQL, Looker Studio, PowerBI</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projetos -->
+  <section id="projetos" class="py-10">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-6">Projetos</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-2">Pipeline de Testes Automatizados</h3>
+          <p class="text-gray-700">
+            Configurei um pipeline de CI/CD com GitHub Actions para executar testes automatizados com Selenium e pytest, reduzindo o tempo de validação em 30%. 
+            <a href="https://github.com/[seu-usuario]/[seu-repositorio]" target="_blank" class="text-blue-600 hover:underline">Ver no GitHub</a>
+          </p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-2">Dashboard de Qualidade</h3>
+          <p class="text-gray-700">
+            Desenvolvi um dashboard em Looker Studio para monitorar métricas de qualidade de software, integrando dados de testes com SQL. 
+            <a href="[link-do-projeto]" target="_blank" class="text-blue-600 hover:underline">Ver projeto</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contato -->
+  <section id="contato" class="bg-blue-600 text-white py-10">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Entre em Contato</h2>
+      <p class="text-lg mb-4">Estou disponível para novas oportunidades e colaborações. Entre em contato!</p>
+      <a href="mailto:[seu-email]" class="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-gray-200">Enviar Email</a>
+    </div>
+  </section>
+
+  <!-- Rodapé -->
+  <footer class="bg-gray-800 text-white py-4">
+    <div class="container mx-auto text-center">
+      <p>&copy; 2025 [Seu Nome]. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
